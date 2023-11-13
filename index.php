@@ -44,10 +44,6 @@ include('./components/header.php');
         gap: 2rem;
     }
 
-    #information {
-        width: 22rem;
-    }
-
     #controls,
     #canvas {
         border: 1px solid var(--secondary);
@@ -83,11 +79,11 @@ include('./components/header.php');
         left: -2.5rem;
         transform: rotate(-90deg) translateX(20%);
         text-align: center;
-        font-weight: 300;
+        font-weight: 400;
     }
 
     #controls .matrix-transformation input {
-        width: 100%;
+        width: 6rem;
         border-radius: 10px;
         font-size: 1.2rem;
         background: radial-gradient(50% 50% at 50% 50%, #D4BDE9 0%, #DACAED 100%);
@@ -124,7 +120,7 @@ include('./components/header.php');
         color: var(--white);
         width: 100%;
         text-align: center;
-        font-weight: 300;
+        font-weight: 400;
     }
 
     .range-slider input,
@@ -157,6 +153,36 @@ include('./components/header.php');
     .range-slider input::-webkit-slider-thumb:hover {
         cursor: pointer;
         background-color: var(--primary);
+    }
+
+    .checklist {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+        padding: 0 1rem 1rem 1rem;
+        gap: 0.5rem;
+    }
+
+    .checklist label {
+        color: var(--white);
+        font-weight: 400;
+    }
+
+    .checklist input {
+        width: 1.2rem;
+        height: 1.2rem;
+        background-color: var(--accent);
+        border: 2px solid var(--secondary);
+        border-radius: 50%;
+    }
+
+    .checklist input:hover {
+        cursor: pointer;
+    }
+
+    .checklist input:checked {
+        background-color: var(--secondary);
     }
 
     #credits {
@@ -211,6 +237,10 @@ include('./components/header.php');
                 <label for="columns">Scale</label>
                 <input id="scale" type="range"/>
             </div>
+            <div class="checklist">
+                <input type="checkbox" id="fill">
+                <label for="fill">Fill square</label>
+            </div>
         </section>
         <section id="credits" class="d-flex flex-column align-items-center w-100">
             <h2>credits</h2>
@@ -229,7 +259,7 @@ include('./components/header.php');
     </section>
     <section id="canvas" class="d-flex flex-column align-items-center w-100 h-100">
         <h2>canvas</h2>
-        <div class="canvas-container w-100 h-100"></div>
+        <div class="canvas-container d-flex align-items-center justify-content-center w-100 h-100"></div>
     </section>
 </main>
 
@@ -247,7 +277,7 @@ let square = object[0];
 let edges = object[1];
 const camera = new THREE.PerspectiveCamera(40, canvasWidth / canvasHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer();
-renderer.setClearColor(0x1C1A29); // Set background color to white
+renderer.setClearColor(0x1C1A29); // Set background color to accent colour
 renderer.setSize(canvasWidth, canvasHeight);
 document.querySelector('#canvas .canvas-container').appendChild(renderer.domElement);
 
@@ -260,6 +290,7 @@ const animate = function () {
     renderer.render(scene, camera);
 };
 
+createAxes();
 createSquare();
 animate();
 
@@ -268,10 +299,10 @@ document.querySelector('#b').addEventListener('input', applyMatrix);
 document.querySelector('#c').addEventListener('input', applyMatrix);
 document.querySelector('#d').addEventListener('input', applyMatrix);
 
-function createSquare() {
+function createSquare(fill=0x1C1A29) {
     // Create a unit square geometry
     const squareGeometry = new THREE.PlaneGeometry(1, 1);
-    const material = new THREE.MeshBasicMaterial({ color: 0x1C1A29, side: THREE.DoubleSide });
+    const material = new THREE.MeshBasicMaterial({ color: fill, side: THREE.DoubleSide });
 
     // Create custom index array excluding diagonals
     const indices = [
@@ -284,7 +315,7 @@ function createSquare() {
     edgeGeometry.setAttribute('position', squareGeometry.getAttribute('position'));
 
     // Create material for the edges
-    const edgeMaterial = new THREE.LineBasicMaterial({ color: 0xD4BDE9, linewidth: 50 });
+    const edgeMaterial = new THREE.LineBasicMaterial({ color: 0xD4BDE9, linewidth: 5 });
 
     // Create edges and original square
     const edges = new THREE.LineSegments(edgeGeometry, edgeMaterial);
@@ -294,6 +325,35 @@ function createSquare() {
     scene.add(square, edges);
 
     return [square, edges];
+}
+
+function createAxes() {
+    // Create X and Y axis lines with a dashed pattern
+    const dashedLineMaterial = new THREE.LineDashedMaterial({
+        color: 0xDFDDF3, // Line color
+        linewidth: 5,
+        scale: 1,
+        dashSize: 0.05, // Length of the dash
+        gapSize: 0.05,  // Length of the gap between dashes
+    });
+
+    // X-axis
+    const xAxisGeometry = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(-100, 0, 0),
+        new THREE.Vector3(100, 0, 0),
+    ]);
+    const xAxisLine = new THREE.Line(xAxisGeometry, dashedLineMaterial);
+    xAxisLine.computeLineDistances(); // This is important for dashed lines
+    scene.add(xAxisLine);
+
+    // Y-axis
+    const yAxisGeometry = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(0, -100, 0),
+        new THREE.Vector3(0, 100, 0),
+    ]);
+    const yAxisLine = new THREE.Line(yAxisGeometry, dashedLineMaterial);
+    yAxisLine.computeLineDistances(); // This is important for dashed lines
+    scene.add(yAxisLine);
 }
 
 function applyMatrix() {
@@ -321,6 +381,37 @@ function applyMatrix() {
     square.geometry.applyMatrix4(matrix);
 }
 
+function changeScale(value) {
+    camera.fov = value; // Set the desired FOV value
+    camera.updateProjectionMatrix();
+}
+
+function fillSquare(fill) {
+    if (fill) {
+        createSquare(0x5e279f);
+    } else {
+        createSquare();
+    }
+}
+
+function snap(input) {
+	if (input.value < 55 && input.value > 45) {
+		input.value = 50;
+	} else if (input.value < 5) {
+		input.value = 0;
+    } else if (input.value > 95) {
+        input.value = 100;
+    }
+}
+
+document.querySelector('#scale').oninput = function() {
+	snap(document.querySelector('#scale'));
+	changeScale(document.querySelector('#scale').value - 10);
+}
+
+document.querySelector('#fill').onchange = function() {
+    fillSquare(this.checked);
+}
 </script>
 
 <?php include('./components/footer.php'); ?>

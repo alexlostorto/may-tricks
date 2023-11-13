@@ -28,11 +28,11 @@ if (basename(__FILE__) == basename($_SERVER['SCRIPT_FILENAME'])) {
         <meta name="author" content="<?= $seo_author ?>" />
 
         <!-- Icons -->
-        <link rel="icon" type="image/x-icon" href="/matrices/assets/icons/favicon.png">
-        <link rel="manifest" href="/matrices/site.webmanifest">
+        <link rel="icon" type="image/x-icon" href="/may-tricks/assets/icons/favicon.png">
+        <link rel="manifest" href="/may-tricks/site.webmanifest">
 
         <!-- Styles -->
-        <link href="/matrices/assets/lib/bootstrap.min.css" rel="stylesheet">
+        <link href="/may-tricks/assets/lib/bootstrap.min.css" rel="stylesheet">
         <style>
             @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
 
