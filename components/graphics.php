@@ -124,8 +124,8 @@ class UnitSquare {
 
         // Show only bottom and left sides
         const indices = [
-            0, 2,
-            2, 3,
+            0, 1,
+            1, 3,
         ];
 
         const edgeGeometry = new THREE.BufferGeometry();
@@ -137,6 +137,7 @@ class UnitSquare {
         const edges = new THREE.LineSegments(edgeGeometry, edgeMaterial);
         const square = new THREE.Mesh(squareGeometry, material);
 
+        squareGeometry.translate(0.5, 0.5, 0);
         scene.add(square, edges);
 
         return square;
