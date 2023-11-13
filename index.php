@@ -43,6 +43,10 @@ include('./components/header.php');
         gap: 2rem;
     }
 
+    #information {
+        gap: 2rem;
+    }
+
     #controls,
     #canvas,
     #transform {
@@ -229,6 +233,10 @@ include('./components/header.php');
     #canvas {
         height: 50%;
         width: 50%;
+        overflow: hidden;
+    }
+
+    #canvas .canvas-container {
         overflow: hidden;
     }
 </style>
