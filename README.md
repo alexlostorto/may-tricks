@@ -1,10 +1,10 @@
-<h1 align="center">Chat App</h1>
+<h1 align="center">May-tricks</h1>
 
 <p align="center">
-  <b>Simple, secure, fast.</b>
+  <b>We're stuck in the matrix!.</b>
 </p>
 
-A chat app made by some very cool peeps :>.
+Matrix transformations made easier!
 
 ## 📜 Credits
 
@@ -13,5 +13,5 @@ class Developers:
     self.working = True
 
     def getDevelopers(self):
-        return ['alexlostorto', 'finnimo']
+        return ['alexlostorto']
 ```
