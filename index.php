@@ -21,7 +21,6 @@ include('./components/header.php');
     body {
         display: flex;
         flex-direction: column;
-        overflow: hidden;
         background-color: var(--accent);
     }
 
