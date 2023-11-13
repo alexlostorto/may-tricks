@@ -34,6 +34,12 @@ class Controls {
         const d = parseInt(controls.d.value);
 
         if ((a*d - b*c) === 0) {
+            console.log("Determinant is 0");
+            return;
+        }
+
+        if (isNaN(a) || isNaN(b) || isNaN(c) || isNaN(d)) {
+            console.log("Input is not a number");
             return;
         }
 
