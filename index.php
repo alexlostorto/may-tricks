@@ -45,14 +45,16 @@ include('./components/header.php');
     }
 
     #controls,
-    #canvas {
+    #canvas,
+    #transform {
         border: 1px solid var(--secondary);
         box-shadow: 0 0 20px #B28DDE;
         border-radius: 20px;
     }
 
     #controls h2,
-    #canvas h2 {
+    #canvas h2,
+    #transform {
         padding: 1.25rem;
         font-weight: 200;
         color: var(--secondary);
@@ -91,6 +93,19 @@ include('./components/header.php');
         text-align: center;
         padding: 0.6rem 0.5rem;
         padding-left: 22px;
+    }
+
+    #transform {
+        margin-top: 2rem;
+        font-size: 1.5rem;
+        padding: 1rem;
+    }
+
+    #transform:hover {
+        background: linear-gradient(112deg, var(--primary) 0%, var(--secondary) 100%);
+        color: var(--light-primary);
+        font-weight: 400;
+        text-shadow: 0 0 10px var(--secondary);
     }
 
     input[type='range'] {
@@ -225,23 +240,26 @@ include('./components/header.php');
 </header>
 <main class="d-flex flex-row w-100 h-100">
     <section id="information" class="d-flex flex-column align-items-center justify-content-between">
-        <section id="controls" class="d-flex flex-column align-items-center w-100">
-            <h2>controls</h2>
-            <div class="matrix-transformation d-grid">
-                <input type="number" id="a" value="0">
-                <input type="number" id="b" value="1">
-                <input type="number" id="c" value="1">
-                <input type="number" id="d" value="0">
-            </div>
-            <div class="range-slider">
-                <label for="columns">Scale</label>
-                <input id="scale" type="range"/>
-            </div>
-            <div class="checklist">
-                <input type="checkbox" id="fill">
-                <label for="fill">Fill square</label>
-            </div>
-        </section>
+        <div>
+            <section id="controls" class="d-flex flex-column align-items-center w-100">
+                <h2>controls</h2>
+                <div class="matrix-transformation d-grid">
+                    <input type="number" id="a" value="0">
+                    <input type="number" id="b" value="1">
+                    <input type="number" id="c" value="1">
+                    <input type="number" id="d" value="0">
+                </div>
+                <div class="range-slider">
+                    <label for="columns">Scale</label>
+                    <input id="scale" type="range"/>
+                </div>
+                <div class="checklist">
+                    <input type="checkbox" id="fill">
+                    <label for="fill">Fill square</label>
+                </div>
+            </section>
+            <button id="transform" class="w-100">transform</button>
+        </div>
         <section id="credits" class="d-flex flex-column align-items-center w-100">
             <h2>credits</h2>
             <div class="d-flex flex-row w-100 justify-content-between">
@@ -263,155 +281,5 @@ include('./components/header.php');
     </section>
 </main>
 
-<script type="module">
-
-import * as THREE from 'https://threejs.org/build/three.module.js';
-
-const canvasWidth = document.querySelector('#canvas .canvas-container').clientWidth;
-const canvasHeight = document.querySelector('#canvas .canvas-container').clientHeight;
-
-// Setup
-const scene = new THREE.Scene();
-let object = createSquare();
-let square = object[0];
-let edges = object[1];
-const camera = new THREE.PerspectiveCamera(40, canvasWidth / canvasHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer();
-renderer.setClearColor(0x1C1A29); // Set background color to accent colour
-renderer.setSize(canvasWidth, canvasHeight);
-document.querySelector('#canvas .canvas-container').appendChild(renderer.domElement);
-
-// Set camera position
-camera.position.z = 5;
-
-// Animation
-const animate = function () {
-    requestAnimationFrame(animate);
-    renderer.render(scene, camera);
-};
-
-createAxes();
-createSquare();
-animate();
-
-document.querySelector('#a').addEventListener('input', applyMatrix);
-document.querySelector('#b').addEventListener('input', applyMatrix);
-document.querySelector('#c').addEventListener('input', applyMatrix);
-document.querySelector('#d').addEventListener('input', applyMatrix);
-
-function createSquare(fill=0x1C1A29) {
-    // Create a unit square geometry
-    const squareGeometry = new THREE.PlaneGeometry(1, 1);
-    const material = new THREE.MeshBasicMaterial({ color: fill, side: THREE.DoubleSide });
-
-    // Create custom index array excluding diagonals
-    const indices = [
-        0, 2,
-        2, 3,
-    ];
-
-    const edgeGeometry = new THREE.BufferGeometry();
-    edgeGeometry.setIndex(indices);
-    edgeGeometry.setAttribute('position', squareGeometry.getAttribute('position'));
-
-    // Create material for the edges
-    const edgeMaterial = new THREE.LineBasicMaterial({ color: 0xD4BDE9, linewidth: 5 });
-
-    // Create edges and original square
-    const edges = new THREE.LineSegments(edgeGeometry, edgeMaterial);
-    const square = new THREE.Mesh(squareGeometry, material);
-
-    // Add the square and edges to the scene
-    scene.add(square, edges);
-
-    return [square, edges];
-}
-
-function createAxes() {
-    // Create X and Y axis lines with a dashed pattern
-    const dashedLineMaterial = new THREE.LineDashedMaterial({
-        color: 0xDFDDF3, // Line color
-        linewidth: 5,
-        scale: 1,
-        dashSize: 0.05, // Length of the dash
-        gapSize: 0.05,  // Length of the gap between dashes
-    });
-
-    // X-axis
-    const xAxisGeometry = new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(-100, 0, 0),
-        new THREE.Vector3(100, 0, 0),
-    ]);
-    const xAxisLine = new THREE.Line(xAxisGeometry, dashedLineMaterial);
-    xAxisLine.computeLineDistances(); // This is important for dashed lines
-    scene.add(xAxisLine);
-
-    // Y-axis
-    const yAxisGeometry = new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(0, -100, 0),
-        new THREE.Vector3(0, 100, 0),
-    ]);
-    const yAxisLine = new THREE.Line(yAxisGeometry, dashedLineMaterial);
-    yAxisLine.computeLineDistances(); // This is important for dashed lines
-    scene.add(yAxisLine);
-}
-
-function applyMatrix() {
-    console.log(square);
-    console.log(edges);
-    scene.remove(square, edges);
-    object = createSquare();
-    square = object[0];
-    edges = object[1];
-
-    renderer.clear();
-    
-    const a = parseInt(document.getElementById('a').value);
-    const b = parseInt(document.getElementById('b').value);
-    const c = parseInt(document.getElementById('c').value);
-    const d = parseInt(document.getElementById('d').value);
-
-    const matrix = new THREE.Matrix4();
-    matrix.set(
-        a, b, 0, 0,
-        c, d, 0, 0,
-        0, 0, 1, 0,
-        0, 0, 0, 1
-    );
-    square.geometry.applyMatrix4(matrix);
-}
-
-function changeScale(value) {
-    camera.fov = value; // Set the desired FOV value
-    camera.updateProjectionMatrix();
-}
-
-function fillSquare(fill) {
-    if (fill) {
-        createSquare(0x5e279f);
-    } else {
-        createSquare();
-    }
-}
-
-function snap(input) {
-	if (input.value < 55 && input.value > 45) {
-		input.value = 50;
-	} else if (input.value < 5) {
-		input.value = 0;
-    } else if (input.value > 95) {
-        input.value = 100;
-    }
-}
-
-document.querySelector('#scale').oninput = function() {
-	snap(document.querySelector('#scale'));
-	changeScale(document.querySelector('#scale').value - 10);
-}
-
-document.querySelector('#fill').onchange = function() {
-    fillSquare(this.checked);
-}
-</script>
-
+<?php include('./components/graphics.php'); ?>
 <?php include('./components/footer.php'); ?>
