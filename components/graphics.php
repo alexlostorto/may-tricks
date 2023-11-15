@@ -224,8 +224,7 @@ class Axes {
     }
 }
 
-
-import * as THREE from 'https://threejs.org/build/three.module.js';
+import * as THREE from '/may-tricks/assets/lib/three.module.js';
 
 const colours = new Colours();
 const graphics = new Graphics();
