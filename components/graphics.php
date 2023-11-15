@@ -18,6 +18,7 @@ class Controls {
         this.transform = document.getElementById('transform');
         this.scale = document.getElementById('scale');
         this.fill = document.getElementById('fill');
+        this.hide = document.getElementById('hide-axes');
         this.loadEventListeners();
     }
 
@@ -25,6 +26,7 @@ class Controls {
         this.transform.addEventListener('click', this.applyMatrix);
         this.scale.addEventListener('input', this.changeScale);
         this.fill.addEventListener('input', this.fillSquare);
+        this.hide.addEventListener('input', this.hideAxes);
     }
 
     applyMatrix() {
@@ -51,7 +53,6 @@ class Controls {
             0, 0, 0, 1
         );
 
-        graphics.unitSquare.square.geometry = graphics.unitSquare.originalGeometry;
         graphics.unitSquare.square.geometry.applyMatrix4(matrix);
     }
 
@@ -67,6 +68,29 @@ class Controls {
             graphics.unitSquare.changeFillColour(colours.tertiary);
         } else {
             graphics.unitSquare.changeFillColour(colours.accent);
+        }
+    }
+
+    hideAxes() {
+        console.log(graphics.axes);
+        if (this.checked) {
+            console.log(graphics.axes.material);
+            const dashedLineMaterial = new THREE.LineDashedMaterial({
+                opacity: 0,
+                visible: false,
+            })
+            graphics.axes.lines[0].material = dashedLineMaterial;
+            graphics.axes.lines[1].material = dashedLineMaterial;
+        } else {
+            const dashedLineMaterial = new THREE.LineDashedMaterial({
+                color: graphics.axes.lineColour,
+                linewidth: graphics.axes.lineWidth,
+                scale: graphics.axes.scale,
+                dashSize: graphics.axes.dashSize,
+                gapSize: graphics.axes.gapSize
+            });
+            graphics.axes.lines[0].material = dashedLineMaterial;
+            graphics.axes.lines[1].material = dashedLineMaterial;
         }
     }
 
@@ -90,6 +114,7 @@ class Graphics {
         this.renderer = new THREE.WebGLRenderer();
         this.scene = new THREE.Scene();
         this.unitSquare = new UnitSquare(this.scene);
+        this.axes = new Axes(this.scene);
     }
 
     setup() {
@@ -97,7 +122,6 @@ class Graphics {
         this.renderer.setClearColor(colours.accent);  // Set background color to accent colour
         this.renderer.setSize(this.canvasWidth, this.canvasHeight);
         this.canvasContainer.appendChild(this.renderer.domElement);
-        new Axes().create(this.scene);
         this.animate();
     }
 
@@ -112,8 +136,8 @@ class UnitSquare {
         this.fillColour = colours.accent;
         this.edgeColour = colours.secondary;
         this.lineWidth = 5;
-        this.square = this.create(scene);
-        this.originalGeometry;
+        this.square = this.createSquare(scene);
+        this.edges = this.createEdges(scene);
 
         return this;
     }
@@ -123,40 +147,49 @@ class UnitSquare {
         this.square.material.color.set(this.fillColour);
     }
 
-    create(scene) {
+    createSquare(scene) {
         const squareGeometry = new THREE.PlaneGeometry(1, 1);
-        this.originalGeometry = squareGeometry;
         const material = new THREE.MeshBasicMaterial({ color: colours.accent, side: THREE.DoubleSide });
 
+        const square = new THREE.Mesh(squareGeometry, material);
+        squareGeometry.translate(0.5, 0.5, 0);
+        scene.add(square);
+
+        return square;
+    }
+
+    createEdges(scene) {
         // Show only bottom and left sides
         const indices = [
             0, 1,
+            0, 2,
+            2, 3,
             1, 3,
         ];
 
         const edgeGeometry = new THREE.BufferGeometry();
         edgeGeometry.setIndex(indices);
-        edgeGeometry.setAttribute('position', squareGeometry.getAttribute('position'));
+        edgeGeometry.setAttribute('position', this.square.geometry.getAttribute('position'));
 
         // Create material for the edges
         const edgeMaterial = new THREE.LineBasicMaterial({ color: this.edgeColour, linewidth: this.lineWidth });
         const edges = new THREE.LineSegments(edgeGeometry, edgeMaterial);
-        const square = new THREE.Mesh(squareGeometry, material);
+        scene.add(edges);
 
-        squareGeometry.translate(0.5, 0.5, 0);
-        scene.add(square, edges);
-
-        return square;
+        return edges
     }
 }
 
 class Axes {
-    constructor() {
+    constructor(scene) {
         this.lineWidth = 5;
         this.lineColour = colours.white;
         this.dashSize = 0.05;
         this.gapSize = 0.05;
         this.scale = 1;
+        this.lines = this.create(scene);
+
+        return this;
     }
 
     create(scene) {
@@ -186,6 +219,8 @@ class Axes {
         const yAxisLine = new THREE.Line(yAxisGeometry, dashedLineMaterial);
         yAxisLine.computeLineDistances(); // This is important for dashed lines
         scene.add(yAxisLine);
+
+        return [xAxisLine, yAxisLine];
     }
 }
 

@@ -264,6 +264,10 @@ include('./components/header.php');
                     <input type="checkbox" id="fill">
                     <label for="fill">Fill square</label>
                 </div>
+                <div class="checklist">
+                    <input type="checkbox" id="hide-axes">
+                    <label for="hide-axes">Hide axes</label>
+                </div>
             </section>
             <button id="transform" class="w-100">transform</button>
         </div>
