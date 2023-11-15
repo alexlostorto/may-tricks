@@ -72,9 +72,7 @@ class Controls {
     }
 
     hideAxes() {
-        console.log(graphics.axes);
         if (this.checked) {
-            console.log(graphics.axes.material);
             const dashedLineMaterial = new THREE.LineDashedMaterial({
                 opacity: 0,
                 visible: false,
@@ -133,7 +131,7 @@ class Graphics {
 
 class UnitSquare {
     constructor(scene) {
-        this.fillColour = colours.accent;
+        this.fillColour = colours.tertiary;
         this.edgeColour = colours.secondary;
         this.lineWidth = 5;
         this.square = this.createSquare(scene);
@@ -149,7 +147,7 @@ class UnitSquare {
 
     createSquare(scene) {
         const squareGeometry = new THREE.PlaneGeometry(1, 1);
-        const material = new THREE.MeshBasicMaterial({ color: colours.accent, side: THREE.DoubleSide });
+        const material = new THREE.MeshBasicMaterial({ color: this.fillColour, side: THREE.DoubleSide });
 
         const square = new THREE.Mesh(squareGeometry, material);
         squareGeometry.translate(0.5, 0.5, 0);

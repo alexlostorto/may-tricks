@@ -56,8 +56,7 @@ include('./components/header.php');
     }
 
     #controls h2,
-    #canvas h2,
-    #transform {
+    #canvas h2 {
         padding: 1.25rem;
         font-weight: 200;
         color: var(--secondary);
@@ -100,15 +99,19 @@ include('./components/header.php');
 
     #transform {
         margin-top: 2rem;
-        font-size: 1.5rem;
+        font-size: 1.6rem;
         padding: 1rem;
-    }
-
-    #transform:hover {
         background: linear-gradient(112deg, var(--primary) 0%, var(--secondary) 100%);
         color: var(--light-primary);
         font-weight: 400;
         text-shadow: 0 0 10px var(--secondary);
+    }
+
+    #transform:hover {
+        background: var(--accent);
+        font-weight: 200;
+        color: var(--secondary);
+        text-shadow: 0 0 50px var(--secondary);
     }
 
     input[type='range'] {
@@ -203,31 +206,42 @@ include('./components/header.php');
         background-color: var(--secondary);
     }
 
-    #credits {
-        border-radius: 20px;
+    #github {
+        position: fixed;
+        right: 0;
+        top: 0;
+        border-bottom-left-radius: 20px;
         background: linear-gradient(112deg, var(--primary) 0%, var(--secondary) 100%);
-        padding: 1rem;
-    }
-
-    #credits h2 {
-        color: var(--light-primary);
-        font-weight: 400;
-        text-shadow: 0 0 10px var(--secondary);
-        margin-bottom: 1rem;
-    }
-
-    #credits .social {
-        width: 4rem;
-        height: 4rem;
         padding: 0.5rem;
-        border-radius: 15px;
         background: radial-gradient(50% 50% at 50% 50%, #D4BDE9 0%, #DACAED 100%);
         box-shadow: 0px 0px 16.5px 0px rgba(177, 140, 222, 0.25);
     }
 
-    #credits .social:hover {
+    #github:hover {
         cursor: pointer;
-        opacity: 0.6;
+        box-shadow: 0px 0px 50px 20px rgba(177, 140, 222, 0.25);
+    }
+
+    #github:hover svg {
+        animation: wave 0.5s ease forwards;
+    }
+
+    @keyframes wave {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        30% {
+            transform: rotate(30deg);
+        }
+
+        60% {
+            transform: rotate(-30deg);
+        }
+
+        100% {
+            transform: rotate(0deg);
+        }
     }
 
     #canvas {
@@ -244,6 +258,9 @@ include('./components/header.php');
 <header class="d-flex align-items-center">
     <h1>may-tricks</h1>
     <?php include('./assets/svg/logo.svg'); ?>
+    <a id="github" class="d-flex justify-content-center align-items-center" href="https://github.com/alexlostorto/may-tricks" target="_blank">
+        <?php include('./assets/svg/github.svg'); ?>
+    </a>
 </header>
 <main class="d-flex flex-row w-100 h-100">
     <section id="information" class="d-flex flex-column align-items-center justify-content-between">
@@ -261,7 +278,7 @@ include('./components/header.php');
                     <input id="scale" type="range"/>
                 </div>
                 <div class="checklist">
-                    <input type="checkbox" id="fill">
+                    <input type="checkbox" id="fill" checked="true">
                     <label for="fill">Fill square</label>
                 </div>
                 <div class="checklist">
@@ -271,20 +288,6 @@ include('./components/header.php');
             </section>
             <button id="transform" class="w-100">transform</button>
         </div>
-        <section id="credits" class="d-flex flex-column align-items-center w-100">
-            <h2>credits</h2>
-            <div class="d-flex flex-row w-100 justify-content-between">
-                <a class="social d-flex justify-content-center align-items-center" href="https://github.com/alexlostorto">
-                    <?php include('./assets/svg/github.svg'); ?>
-                </a>
-                <a class="social d-flex justify-content-center align-items-center" href="https://www.linkedin.com/in/alex-lo-storto">
-                    <?php include('./assets/svg/linkedin.svg'); ?>
-                </a>
-                <a class="social d-flex justify-content-center align-items-center" href="https://www.instagram.com/alexlostorto/">
-                    <?php include('./assets/svg/instagram.svg'); ?>
-                </a>
-            </div>
-        </section>
     </section>
     <section id="canvas" class="d-flex flex-column align-items-center w-100 h-100">
         <h2>canvas</h2>
