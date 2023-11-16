@@ -198,7 +198,8 @@ include('./components/header.php');
         border-radius: 50%;
     }
 
-    .checklist input:hover {
+    .checklist input:hover,
+    .checklist label:hover {
         cursor: pointer;
     }
 
