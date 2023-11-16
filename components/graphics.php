@@ -15,6 +15,7 @@ class Controls {
         this.b = document.getElementById('b');
         this.c = document.getElementById('c');
         this.d = document.getElementById('d');
+        this.fov = 50;
         this.transform = document.getElementById('transform');
         this.scale = document.getElementById('scale');
         this.fill = document.getElementById('fill');
@@ -60,8 +61,8 @@ class Controls {
 
     changeScale() {
         controls.snap(this);
-        let scale = this.value < 50 ? (this.value-50)/2+50 : this.value-10;
-        graphics.camera.fov = scale;
+        controls.fov = this.value < 50 ? (this.value-50)/2+50 : this.value;
+        graphics.camera.fov = controls.fov;
         graphics.camera.updateProjectionMatrix();
     }
 
@@ -130,6 +131,8 @@ class Graphics {
     }
 
     setup() {
+        this.camera.fov = controls.fov;
+        this.camera.updateProjectionMatrix();
         this.camera.position.z = 5;
         this.renderer.setClearColor(colours.accent);  // Set background color to accent colour
         this.renderer.setSize(this.canvasWidth, this.canvasHeight);
