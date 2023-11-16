@@ -19,6 +19,7 @@ class Controls {
         this.scale = document.getElementById('scale');
         this.fill = document.getElementById('fill');
         this.hide = document.getElementById('hide-axes');
+        this.reset = document.getElementById('reset');
         this.loadEventListeners();
     }
 
@@ -27,6 +28,7 @@ class Controls {
         this.scale.addEventListener('input', this.changeScale);
         this.fill.addEventListener('input', this.fillSquare);
         this.hide.addEventListener('input', this.hideAxes);
+        this.reset.addEventListener('click', this.resetMatrix);
     }
 
     applyMatrix() {
@@ -90,6 +92,18 @@ class Controls {
             graphics.axes.lines[0].material = dashedLineMaterial;
             graphics.axes.lines[1].material = dashedLineMaterial;
         }
+    }
+
+    resetMatrix() {
+        this.classList.add('animate');  // Add the 'animate' class to trigger the animation
+
+        document.querySelector('#canvas .canvas-container canvas').remove();
+        graphics = new Graphics();
+        graphics.setup();
+        
+        setTimeout(function() {
+            this.reset.classList.remove('animate');
+        }, 500);  // Half a second, length of animation
     }
 
     snap(input) {
@@ -225,7 +239,7 @@ class Axes {
 import * as THREE from '/may-tricks/assets/lib/three.module.js';
 
 const colours = new Colours();
-const graphics = new Graphics();
+let graphics = new Graphics();
 const controls = new Controls();
 
 graphics.setup();

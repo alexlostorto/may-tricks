@@ -206,6 +206,35 @@ include('./components/header.php');
         background-color: var(--secondary);
     }
 
+    #reset {
+        right: 2rem;
+        bottom: 1rem;
+        gap: 0.2rem;
+    }
+
+    #reset.animate svg {
+        animation: spin 0.5s ease forwards;
+    }
+
+    #reset svg {
+        width: 2.5rem;
+        height: auto;
+    }
+
+    #reset label {
+        color: var(--white);
+        font-weight: 400;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(-360deg);
+        }
+    }
+
     #github {
         position: fixed;
         right: 0;
@@ -265,7 +294,7 @@ include('./components/header.php');
 <main class="d-flex flex-row w-100 h-100">
     <section id="information" class="d-flex flex-column align-items-center justify-content-between">
         <div>
-            <section id="controls" class="d-flex flex-column align-items-center w-100">
+            <section id="controls" class="position-relative d-flex flex-column align-items-center w-100">
                 <h2>controls</h2>
                 <div class="matrix-transformation d-grid">
                     <input type="number" id="a" value="0">
@@ -285,6 +314,10 @@ include('./components/header.php');
                     <input type="checkbox" id="hide-axes">
                     <label for="hide-axes">Hide axes</label>
                 </div>
+                <button id="reset" class="position-absolute d-flex flex-column">
+                    <?php include('./assets/svg/reset.svg'); ?>
+                    <label for="reset">Reset</label>
+                </button>
             </section>
             <button id="transform" class="w-100">transform</button>
         </div>
