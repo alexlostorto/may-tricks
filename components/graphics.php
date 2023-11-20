@@ -15,9 +15,12 @@ class Controls {
         this.b = document.getElementById('b');
         this.c = document.getElementById('c');
         this.d = document.getElementById('d');
+        this.fov = 50;
         this.transform = document.getElementById('transform');
         this.scale = document.getElementById('scale');
         this.fill = document.getElementById('fill');
+        this.hide = document.getElementById('hide-axes');
+        this.reset = document.getElementById('reset');
         this.loadEventListeners();
     }
 
@@ -25,6 +28,8 @@ class Controls {
         this.transform.addEventListener('click', this.applyMatrix);
         this.scale.addEventListener('input', this.changeScale);
         this.fill.addEventListener('input', this.fillSquare);
+        this.hide.addEventListener('input', this.hideAxes);
+        this.reset.addEventListener('click', this.resetMatrix);
     }
 
     applyMatrix() {
@@ -51,14 +56,13 @@ class Controls {
             0, 0, 0, 1
         );
 
-        graphics.unitSquare.square.geometry = graphics.unitSquare.originalGeometry;
         graphics.unitSquare.square.geometry.applyMatrix4(matrix);
     }
 
     changeScale() {
         controls.snap(this);
-        let scale = this.value < 50 ? (this.value-50)/2+50 : this.value-10;
-        graphics.camera.fov = scale;
+        controls.fov = this.value < 50 ? (this.value-50)/2+50 : this.value;
+        graphics.camera.fov = controls.fov;
         graphics.camera.updateProjectionMatrix();
     }
 
@@ -68,6 +72,39 @@ class Controls {
         } else {
             graphics.unitSquare.changeFillColour(colours.accent);
         }
+    }
+
+    hideAxes() {
+        if (this.checked) {
+            const dashedLineMaterial = new THREE.LineDashedMaterial({
+                opacity: 0,
+                visible: false,
+            })
+            graphics.axes.lines[0].material = dashedLineMaterial;
+            graphics.axes.lines[1].material = dashedLineMaterial;
+        } else {
+            const dashedLineMaterial = new THREE.LineDashedMaterial({
+                color: graphics.axes.lineColour,
+                linewidth: graphics.axes.lineWidth,
+                scale: graphics.axes.scale,
+                dashSize: graphics.axes.dashSize,
+                gapSize: graphics.axes.gapSize
+            });
+            graphics.axes.lines[0].material = dashedLineMaterial;
+            graphics.axes.lines[1].material = dashedLineMaterial;
+        }
+    }
+
+    resetMatrix() {
+        this.classList.add('animate');  // Add the 'animate' class to trigger the animation
+
+        document.querySelector('#canvas .canvas-container canvas').remove();
+        graphics = new Graphics();
+        graphics.setup();
+        
+        setTimeout(function() {
+            this.reset.classList.remove('animate');
+        }, 500);  // Half a second, length of animation
     }
 
     snap(input) {
@@ -90,14 +127,16 @@ class Graphics {
         this.renderer = new THREE.WebGLRenderer();
         this.scene = new THREE.Scene();
         this.unitSquare = new UnitSquare(this.scene);
+        this.axes = new Axes(this.scene);
     }
 
     setup() {
+        this.camera.fov = controls.fov;
+        this.camera.updateProjectionMatrix();
         this.camera.position.z = 5;
         this.renderer.setClearColor(colours.accent);  // Set background color to accent colour
         this.renderer.setSize(this.canvasWidth, this.canvasHeight);
         this.canvasContainer.appendChild(this.renderer.domElement);
-        new Axes().create(this.scene);
         this.animate();
     }
 
@@ -109,11 +148,11 @@ class Graphics {
 
 class UnitSquare {
     constructor(scene) {
-        this.fillColour = colours.accent;
+        this.fillColour = colours.tertiary;
         this.edgeColour = colours.secondary;
         this.lineWidth = 5;
-        this.square = this.create(scene);
-        this.originalGeometry;
+        this.square = this.createSquare(scene);
+        this.edges = this.createEdges(scene);
 
         return this;
     }
@@ -123,40 +162,49 @@ class UnitSquare {
         this.square.material.color.set(this.fillColour);
     }
 
-    create(scene) {
+    createSquare(scene) {
         const squareGeometry = new THREE.PlaneGeometry(1, 1);
-        this.originalGeometry = squareGeometry;
-        const material = new THREE.MeshBasicMaterial({ color: colours.accent, side: THREE.DoubleSide });
+        const material = new THREE.MeshBasicMaterial({ color: this.fillColour, side: THREE.DoubleSide });
 
+        const square = new THREE.Mesh(squareGeometry, material);
+        squareGeometry.translate(0.5, 0.5, 0);
+        scene.add(square);
+
+        return square;
+    }
+
+    createEdges(scene) {
         // Show only bottom and left sides
         const indices = [
             0, 1,
+            0, 2,
+            2, 3,
             1, 3,
         ];
 
         const edgeGeometry = new THREE.BufferGeometry();
         edgeGeometry.setIndex(indices);
-        edgeGeometry.setAttribute('position', squareGeometry.getAttribute('position'));
+        edgeGeometry.setAttribute('position', this.square.geometry.getAttribute('position'));
 
         // Create material for the edges
         const edgeMaterial = new THREE.LineBasicMaterial({ color: this.edgeColour, linewidth: this.lineWidth });
         const edges = new THREE.LineSegments(edgeGeometry, edgeMaterial);
-        const square = new THREE.Mesh(squareGeometry, material);
+        scene.add(edges);
 
-        squareGeometry.translate(0.5, 0.5, 0);
-        scene.add(square, edges);
-
-        return square;
+        return edges
     }
 }
 
 class Axes {
-    constructor() {
+    constructor(scene) {
         this.lineWidth = 5;
         this.lineColour = colours.white;
         this.dashSize = 0.05;
         this.gapSize = 0.05;
         this.scale = 1;
+        this.lines = this.create(scene);
+
+        return this;
     }
 
     create(scene) {
@@ -186,14 +234,15 @@ class Axes {
         const yAxisLine = new THREE.Line(yAxisGeometry, dashedLineMaterial);
         yAxisLine.computeLineDistances(); // This is important for dashed lines
         scene.add(yAxisLine);
+
+        return [xAxisLine, yAxisLine];
     }
 }
 
-
-import * as THREE from 'https://threejs.org/build/three.module.js';
+import * as THREE from '/may-tricks/assets/lib/three.module.js';
 
 const colours = new Colours();
-const graphics = new Graphics();
+let graphics = new Graphics();
 const controls = new Controls();
 
 graphics.setup();
