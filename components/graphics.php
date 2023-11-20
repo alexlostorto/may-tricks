@@ -28,10 +28,10 @@ class Controls {
     }
 
     applyMatrix() {
-        const a = parseInt(controls.a.value);
-        const b = parseInt(controls.b.value);
-        const c = parseInt(controls.c.value);
-        const d = parseInt(controls.d.value);
+        const a = controls.a.value;
+        const b = controls.b.value;
+        const c = controls.c.value;
+        const d = controls.d.value;
 
         if ((a*d - b*c) === 0) {
             console.log("Determinant is 0");
