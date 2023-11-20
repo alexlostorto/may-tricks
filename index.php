@@ -327,6 +327,7 @@ include('./components/header.php');
         <h2>canvas</h2>
         <div class="canvas-container d-flex align-items-center justify-content-center w-100 h-100"></div>
     </section>
+    <?php include('./components/popup.php'); ?>
 </main>
 
 <?php include('./components/graphics.php'); ?>

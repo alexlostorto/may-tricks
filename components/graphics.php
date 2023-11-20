@@ -39,7 +39,7 @@ class Controls {
         const d = controls.d.value;
 
         if ((a*d - b*c) === 0) {
-            console.log("Determinant is 0");
+            popup.displayDeterminantZero();
             return;
         }
 
@@ -241,6 +241,7 @@ class Axes {
 
 import * as THREE from '/may-tricks/assets/lib/three.module.js';
 
+const popup = new Popup();
 const colours = new Colours();
 let graphics = new Graphics();
 const controls = new Controls();
