@@ -139,7 +139,16 @@ class Popup {
     displayDeterminantZero() {
         let header = "Warning";
         let content = "Determinant is zero.";
-        let buttonText = "Continue";
+        let buttonText = "Try again";
+        let buttonFunction = function() {this.popup.classList.add("hidden")};
+
+        this.displayPopup(header, content, buttonText, buttonFunction);
+    }
+
+    displayNAN() {
+        let header = "Warning";
+        let content = "Input is not a number.";
+        let buttonText = "Try again";
         let buttonFunction = function() {this.popup.classList.add("hidden")};
 
         this.displayPopup(header, content, buttonText, buttonFunction);

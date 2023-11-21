@@ -38,13 +38,13 @@ class Controls {
         const c = controls.c.value;
         const d = controls.d.value;
 
-        if ((a*d - b*c) === 0) {
-            popup.displayDeterminantZero();
+        if (!a || !b || !c || !d) {
+            popup.displayNAN();
             return;
         }
 
-        if (isNaN(a) || isNaN(b) || isNaN(c) || isNaN(d)) {
-            console.log("Input is not a number");
+        if ((a*d - b*c) === 0) {
+            popup.displayDeterminantZero();
             return;
         }
 
