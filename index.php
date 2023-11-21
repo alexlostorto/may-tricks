@@ -38,6 +38,21 @@ include('./components/header.php');
         font-weight: 500;
     }
 
+    header h1:hover {
+        text-shadow: 0 0 20px #B28DDE;
+        animation: rainbow 1s linear infinite;
+        user-select: none;
+    }
+
+    @keyframes rainbow {
+        0% {
+            filter: hue-rotate(0deg);
+        }
+        100% {
+            filter: hue-rotate(360deg);
+        }
+    }
+
     main {
         padding: 2rem;
         gap: 2rem;
@@ -45,6 +60,7 @@ include('./components/header.php');
 
     #information {
         gap: 2rem;
+        width: 25rem;
     }
 
     #controls,
@@ -74,7 +90,8 @@ include('./components/header.php');
         padding: 0.5rem;
     }
 
-    #controls .matrix-transformation::after {
+    #controls .matrix-transformation::after,
+    .output > div::after {
         content: 'Matrix';
         color: var(--white);
         display: block;
@@ -86,6 +103,11 @@ include('./components/header.php');
         font-weight: 400;
     }
 
+    .output > div::after {
+        content: 'Output';
+        left: -2.8rem;
+    }
+
     #controls .matrix-transformation input {
         width: 6rem;
         border-radius: 10px;
@@ -95,6 +117,11 @@ include('./components/header.php');
         text-align: center;
         padding: 0.6rem 0.5rem;
         padding-left: 22px;
+    }
+
+    #controls .matrix-transformation input:hover {
+        filter: contrast(1.2);
+        cursor: pointer;
     }
 
     #transform {
@@ -193,7 +220,7 @@ include('./components/header.php');
     .checklist input {
         width: 1.2rem;
         height: 1.2rem;
-        background-color: var(--accent);
+        background-color: rgba(0, 0, 0, 0);
         border: 2px solid var(--secondary);
         border-radius: 50%;
     }
@@ -201,6 +228,7 @@ include('./components/header.php');
     .checklist input:hover,
     .checklist label:hover {
         cursor: pointer;
+        filter: contrast(1.5);
     }
 
     .checklist input:checked {
@@ -211,6 +239,11 @@ include('./components/header.php');
         right: 2rem;
         bottom: 1rem;
         gap: 0.2rem;
+    }
+
+    #reset:hover * {
+        filter: contrast(1.4);
+        cursor: pointer;
     }
 
     #reset.animate svg {
@@ -225,6 +258,32 @@ include('./components/header.php');
     #reset label {
         color: var(--white);
         font-weight: 400;
+    }
+
+    .output {
+        padding: 0.6rem 0;
+        margin-top: 2rem;
+        border: 1px solid var(--secondary);
+        box-shadow: 0 0 20px #B28DDE;
+        border-radius: 20px;
+        min-height: 5rem;
+    }
+
+    .output > div {
+        position: relative;
+        margin: 0 0.6rem 0 2.3rem;
+        width: 100%;
+        padding: 1rem;
+        border-radius: 10px;
+        background: rgba(183, 153, 221, 0.10);
+        backdrop-filter: blur(5px);
+    }
+
+    .output > div > p {
+        text-align: center;
+        color: var(--primary);
+        font-weight: 300;
+        margin: 0;
     }
 
     @keyframes spin {
@@ -250,6 +309,7 @@ include('./components/header.php');
     #github:hover {
         cursor: pointer;
         box-shadow: 0px 0px 50px 20px rgba(177, 140, 222, 0.25);
+        filter: contrast(1.2);
     }
 
     #github:hover svg {
@@ -298,10 +358,10 @@ include('./components/header.php');
             <section id="controls" class="position-relative d-flex flex-column align-items-center w-100">
                 <h2>controls</h2>
                 <div class="matrix-transformation d-grid">
-                    <input type="number" id="a" value="0">
-                    <input type="number" id="b" value="1">
-                    <input type="number" id="c" value="1">
-                    <input type="number" id="d" value="0">
+                    <input type="number" id="a" value="1">
+                    <input type="number" id="b" value="0">
+                    <input type="number" id="c" value="0">
+                    <input type="number" id="d" value="1">
                 </div>
                 <div class="range-slider">
                     <label for="columns">Scale</label>
@@ -321,6 +381,11 @@ include('./components/header.php');
                 </button>
             </section>
             <button id="transform" class="w-100">transform</button>
+            <div class="output d-flex align-items-center">
+                <div>
+                    <p id="output">Transform something!</p>
+                </div>
+            </div>
         </div>
     </section>
     <section id="canvas" class="d-flex flex-column align-items-center w-100 h-100">

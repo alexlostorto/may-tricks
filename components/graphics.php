@@ -21,6 +21,7 @@ class Controls {
         this.fill = document.getElementById('fill');
         this.hide = document.getElementById('hide-axes');
         this.reset = document.getElementById('reset');
+        this.output = document.getElementById('output');
         this.loadEventListeners();
     }
 
@@ -47,6 +48,8 @@ class Controls {
             popup.displayDeterminantZero();
             return;
         }
+
+        transformation.describe(a, b, c, d);
 
         const matrix = new THREE.Matrix4();
         matrix.set(
@@ -115,6 +118,86 @@ class Controls {
         } else if (input.value > 95) {
             input.value = 100;
         }
+    }
+}
+
+class Transformation {
+    constructor(a, b, c, d) {
+        this.a = a;
+        this.b = b;
+        this.c = c;
+        this.d = d;
+    }
+
+    describe(a, b, c, d) {
+        this.a = a;
+        this.b = b;
+        this.c = c;
+        this.d = d;
+
+        if (this.isIdentityMatrix()) {
+            controls.output.textContent = 'Identity matrix';
+        } else if (this.isEnlargementMatrix()) {
+            controls.output.textContent = `Enlargement Scale Factor ${this.a} about (0, 0)`;
+        } else if (this.isShearXMatrix()) {
+            controls.output.textContent = `Shear Scale Factor ${this.b} in x-direction`;
+        } else if (this.isShearYMatrix()) {
+            controls.output.textContent = `Shear Scale Factor ${this.c} in y-direction`;
+        } else if (this.isRotationMatrix()) {
+            controls.output.textContent = `Rotation ${Math.acos(a) * (180 / Math.PI)} degrees`;
+        } else if (this.isReflectionXMatrix()) {
+            controls.output.textContent = 'Reflection along x-axis';
+        } else if (this.isReflectionYMatrix()) {
+            controls.output.textContent = 'Reflection along y-axis';
+        } else if (this.isReflectionYEqualsXMatrix()) {
+            controls.output.textContent = 'Reflection along y=x';
+        } else if (this.isReflectionYEqualsNegativeXMatrix()) {
+            controls.output.textContent = 'Reflection along y=-x';
+        } else if (this.isStretchMatrix()) {
+            controls.output.textContent = `Stretch Scale Factor ${this.a} in x-axis and Stretch Scale Factor ${this.d} in y-axis`;
+        } else {
+            controls.output.textContent = 'Unknown transformation';
+        }
+    }
+
+    isIdentityMatrix() {
+        return (this.a == 1 && this.b == 0 && this.c == 0 && this.d == 1);
+    }
+
+    isEnlargementMatrix() {
+        return (this.a != 1 && this.a == d && this.b == 0 && this.c == 0);
+    }
+
+    isStretchMatrix() {
+        return (this.b == 0 && this.c == 0);
+    }
+
+    isShearXMatrix() {
+        return (this.a == 1 && this.b != 0 && this.c == 0 && this.d == 1);
+    }
+
+    isShearYMatrix() {
+        return (this.a == 1 && this.b == 0 && this.c != 0 && this.d == 1);
+    }
+
+    isRotationMatrix() {
+        return (this.a == this.d && this.b == -this.c);
+    }
+
+    isReflectionXMatrix() {
+        return (this.a == 1 && this.b == 0 && this.c == 0 && this.d == -1);
+    }
+
+    isReflectionYMatrix() {
+        return (this.a == -1 && this.b == 0 && this.c == 0 && this.d == 1);
+    }
+
+    isReflectionYEqualsXMatrix() {
+        return (this.a == 0 && this.b == 1 && this.c == 1 && this.d == 0);
+    }
+
+    isReflectionYEqualsNegativeXMatrix() {
+        return (this.a == 0 && this.b == -1 && this.c == -1 && this.d == 0);
     }
 }
 
@@ -242,6 +325,7 @@ class Axes {
 import * as THREE from '/may-tricks/assets/lib/three.module.js';
 
 const popup = new Popup();
+const transformation = new Transformation();
 const colours = new Colours();
 let graphics = new Graphics();
 const controls = new Controls();
