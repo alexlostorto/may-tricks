@@ -43,7 +43,7 @@ class Controls {
             return;
         }
 
-        if ((a*d - b*c) === 0) {
+        if ((a * d - b * c) == 0) {
             popup.displayDeterminantZero();
             return;
         }

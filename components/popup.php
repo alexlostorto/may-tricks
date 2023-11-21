@@ -140,7 +140,7 @@ class Popup {
         let header = "Warning";
         let content = "Determinant is zero.";
         let buttonText = "Try again";
-        let buttonFunction = function() {this.popup.classList.add("hidden")};
+        let buttonFunction = () => { this.popup.classList.add("hidden") };
 
         this.displayPopup(header, content, buttonText, buttonFunction);
     }
@@ -149,7 +149,7 @@ class Popup {
         let header = "Warning";
         let content = "Input is not a number.";
         let buttonText = "Try again";
-        let buttonFunction = function() {this.popup.classList.add("hidden")};
+        let buttonFunction = () => { this.popup.classList.add("hidden") };
 
         this.displayPopup(header, content, buttonText, buttonFunction);
     }
