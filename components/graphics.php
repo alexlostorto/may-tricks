@@ -22,22 +22,50 @@ class Controls {
         this.hide = document.getElementById('hide-axes');
         this.reset = document.getElementById('reset');
         this.output = document.getElementById('output');
+        this.animate = true;
+        this.animateDuration = 2000;
         this.loadEventListeners();
     }
 
+    sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
     loadEventListeners() {
-        this.transform.addEventListener('click', this.applyMatrix);
+        this.transform.addEventListener('click', this.applyMatrix.bind(this));
         this.scale.addEventListener('input', this.changeScale);
         this.fill.addEventListener('input', this.fillSquare);
         this.hide.addEventListener('input', this.hideAxes);
-        this.reset.addEventListener('click', this.resetMatrix);
+        this.reset.addEventListener('click', () => {
+            this.reset.classList.add('animate');  // Add the 'animate' class to trigger the animation
+            this.resetMatrix();
+            setTimeout(function() {
+                this.reset.classList.remove('animate');
+            }, 500);  // Half a second, length of animation
+        });
+    }
+
+    getMatrix() {
+        const a = this.a.value;
+        const b = this.b.value;
+        const c = this.c.value;
+        const d = this.d.value;
+        const matrix = new THREE.Matrix4();
+        matrix.set(
+            a, b, 0, 0,
+            c, d, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1
+        );
+
+        return matrix;
     }
 
     applyMatrix() {
-        const a = controls.a.value;
-        const b = controls.b.value;
-        const c = controls.c.value;
-        const d = controls.d.value;
+        const a = this.a.value;
+        const b = this.b.value;
+        const c = this.c.value;
+        const d = this.d.value;
 
         if (!a || !b || !c || !d) {
             popup.displayNAN();
@@ -51,15 +79,9 @@ class Controls {
 
         transformation.describe(a, b, c, d);
 
-        const matrix = new THREE.Matrix4();
-        matrix.set(
-            a, b, 0, 0,
-            c, d, 0, 0,
-            0, 0, 1, 0,
-            0, 0, 0, 1
-        );
+        this.matrix = this.getMatrix();
 
-        graphics.unitSquare.square.geometry.applyMatrix4(matrix);
+        graphics.unitSquare.square.geometry.applyMatrix4(this.matrix);
     }
 
     changeScale() {
@@ -99,15 +121,9 @@ class Controls {
     }
 
     resetMatrix() {
-        this.classList.add('animate');  // Add the 'animate' class to trigger the animation
-
-        document.querySelector('#canvas .canvas-container canvas').remove();
-        graphics = new Graphics();
-        graphics.setup();
-        
-        setTimeout(function() {
-            this.reset.classList.remove('animate');
-        }, 500);  // Half a second, length of animation
+        graphics.unitSquare.square.geometry = new THREE.PlaneGeometry(1, 1);
+        graphics.unitSquare.square.geometry.translate(0.5, 0.5, 0);
+        graphics.unitSquare.edges.geometry.setAttribute('position', graphics.unitSquare.square.geometry.getAttribute('position'));
     }
 
     snap(input) {
