@@ -43,6 +43,18 @@ class Controls {
                 this.reset.classList.remove('animate');
             }, 500);  // Half a second, length of animation
         });
+        this.a.addEventListener('keydown', function(event) {
+            if (event.key === "Enter") {controls.applyMatrix()}
+        });
+        this.b.addEventListener('keydown', function(event) {
+            if (event.key === "Enter") {controls.applyMatrix()}
+        });
+        this.c.addEventListener('keydown', function(event) {
+            if (event.key === "Enter") {controls.applyMatrix()}
+        });
+        this.d.addEventListener('keydown', function(event) {
+            if (event.key === "Enter") {controls.applyMatrix()}
+        });
     }
 
     getMatrix() {
@@ -181,7 +193,7 @@ class Transformation {
     }
 
     isEnlargementMatrix() {
-        return (this.a != 1 && this.a == d && this.b == 0 && this.c == 0);
+        return (this.a != 1 && this.a == this.d && this.b == 0 && this.c == 0);
     }
 
     isStretchMatrix() {
