@@ -60,7 +60,7 @@ include('./components/header.php');
 
     #information {
         gap: 2rem;
-        width: 24rem;
+        width: 22rem;
     }
 
     #controls,
