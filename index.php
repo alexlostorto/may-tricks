@@ -119,7 +119,8 @@ include('./components/header.php');
         padding-left: 22px;
     }
 
-    #controls .matrix-transformation input:hover {
+    #controls .matrix-transformation input:hover,
+    #controls .matrix-transformation input:focus {
         filter: contrast(1.2);
         cursor: pointer;
     }

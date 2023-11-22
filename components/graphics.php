@@ -31,6 +31,18 @@ class Controls {
         this.fill.addEventListener('input', this.fillSquare);
         this.hide.addEventListener('input', this.hideAxes);
         this.reset.addEventListener('click', this.resetMatrix);
+        this.a.addEventListener('keydown', function(event) {
+            if (event.key === "Enter") {controls.applyMatrix()}
+        });
+        this.b.addEventListener('keydown', function(event) {
+            if (event.key === "Enter") {controls.applyMatrix()}
+        });
+        this.c.addEventListener('keydown', function(event) {
+            if (event.key === "Enter") {controls.applyMatrix()}
+        });
+        this.d.addEventListener('keydown', function(event) {
+            if (event.key === "Enter") {controls.applyMatrix()}
+        });
     }
 
     applyMatrix() {
