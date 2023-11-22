@@ -27,6 +27,12 @@ if (basename(__FILE__) == basename($_SERVER['SCRIPT_FILENAME'])) {
         <meta name="description" content="<?= $seo_description ?>" />
         <meta name="author" content="<?= $seo_author ?>" />
 
+        <meta property="og:title" content="May-tricks">
+        <meta property="og:description" content="<?= $seo_description ?>">
+        <meta property="og:image" content="/may-tricks/.github/desktop.png">
+        <meta property="og:url" content="https://alexlostorto.co.uk/may-tricks/">
+        <meta property="og:type" content="website">
+
         <!-- Icons -->
         <link rel="icon" type="image/x-icon" href="/may-tricks/assets/icons/favicon.png">
         <link rel="manifest" href="/may-tricks/site.webmanifest">
