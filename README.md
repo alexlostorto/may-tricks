@@ -14,7 +14,8 @@ Matrix transformations made easier.
 
 - 2x2 Matrix transformations visualiser
 - Identifies matrix transformation
-- 2 options
+- Remove fill colour
+- Hide axes
 - Reset unit square
 
 ## 📋 To-do List
@@ -24,6 +25,7 @@ Matrix transformations made easier.
 - Identify combined transformations
 - 3x3 Matrix transformations
 - Sophisticated error handling
+- Colour themes
 
 ## 🔧 Set-up
 
