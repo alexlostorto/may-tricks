@@ -43,3 +43,5 @@ class Developers:
     def getDevelopers(self):
         return ['alexlostorto']
 ```
+
+Licensed under the MIT License.
