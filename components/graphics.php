@@ -165,7 +165,7 @@ class Transformation {
     }
 
     isEnlargementMatrix() {
-        return (this.a != 1 && this.a == d && this.b == 0 && this.c == 0);
+        return (this.a != 1 && this.a == this.d && this.b == 0 && this.c == 0);
     }
 
     isStretchMatrix() {
