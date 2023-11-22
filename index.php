@@ -60,7 +60,7 @@ include('./components/header.php');
 
     #information {
         gap: 2rem;
-        width: 25rem;
+        width: 24rem;
     }
 
     #controls,
@@ -355,7 +355,7 @@ include('./components/header.php');
 </header>
 <main class="d-flex flex-row w-100 h-100">
     <section id="information" class="d-flex flex-column align-items-center justify-content-between">
-        <div>
+        <div class="w-100">
             <section id="controls" class="position-relative d-flex flex-column align-items-center w-100">
                 <h2>controls</h2>
                 <div class="matrix-transformation d-grid">
