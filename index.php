@@ -174,6 +174,7 @@ include('./components/header.php');
 
     .range-slider input,
     .range-style {
+        transform: scaleX(-1);
         margin-top: 0.8rem;
         height: 15px;
         padding: 0px;
